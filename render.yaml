@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: agrisage
+    runtime: docker
+    plan: standard
+    healthCheckPath: /health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      - key: GEMINI_VISION_MODEL
+        value: gemini-3.1-flash-lite
+      - key: TF_CPP_MIN_LOG_LEVEL
+        value: "2"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: TF_NUM_INTEROP_THREADS
+        value: "1"
+      - key: TF_NUM_INTRAOP_THREADS
+        value: "1"
+    disk:
+      name: agrisage-data
+      mountPath: /app/data
+      sizeGB: 1

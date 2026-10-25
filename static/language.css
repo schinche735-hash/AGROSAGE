@@ -1,0 +1,13 @@
+#language-picker{background:#234332;color:#fff;border:1px solid #66816c;border-radius:8px;padding:8px 9px;font:600 11px sans-serif;max-width:115px}.disease-detail-panel{margin-top:18px;background:#fffef8}.detail-item{padding:12px 0;border-bottom:1px solid #e7eadf}.detail-item:last-child{border-bottom:0}.detail-item b{font-size:12px;color:#42653b}.detail-item p{font-size:12px;color:#667363;margin:5px 0 0;line-height:1.65}.disease-detail-panel h3{margin-bottom:10px}
+
+/* Readable disease guidance and a clean, provider-neutral interface */
+.disease-detail-panel{padding:30px 32px}
+.disease-detail-panel h3{font-size:25px;line-height:1.3;color:#244b2d;margin:0 0 18px}
+.detail-item{padding:17px 0}
+.detail-item b{font-size:17px;color:#315f35}
+.detail-item p{font-size:16px;line-height:1.8;color:#354b39;margin:8px 0 0}
+.disease-detail-panel .guide-foot{font-size:13px;line-height:1.65}
+.disease-detail-panel>.muted{font-size:15px;line-height:1.7}
+/* Remove third-party AI branding / decorative provider marks from the UI */
+[class*="gemini" i],[id*="gemini" i],[class*="claude" i],[id*="claude" i],.ai-provider-logo,.provider-logo{display:none!important}
+@media(max-width:760px){.disease-detail-panel{padding:23px 20px}.disease-detail-panel h3{font-size:22px}.detail-item b{font-size:16px}.detail-item p{font-size:15px;line-height:1.75}.disease-detail-panel .guide-foot{font-size:12px}}

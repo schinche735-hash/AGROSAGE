@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="{{ 'hi' if lang == 'hi' else 'mr' if lang == 'mr' else 'en' }}">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if lang == 'hi' %}स्मार्ट फसल रोग पहचान{% elif lang == 'mr' %}स्मार्ट पीक रोग ओळख{% else %}Smart Crop Disease Detection{% endif %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='language.css') }}">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" role="img"><path d="M20 31V18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20 21C8 21 6 13 7 7c9 0 15 4 13 14Z" fill="#4f9857"/><path d="M20 26c0-10 6-16 14-16 1 9-4 16-14 16Z" fill="#a4d477"/><path d="M13 13l7 7m8-4-8 9" fill="none" stroke="#eaf7df" stroke-width="1.5" stroke-linecap="round"/></svg></span><span>{% if lang == 'hi' %}पौधा<span class="brand-light">डॉक्टर</span>{% elif lang == 'mr' %}पीक<span class="brand-light">डॉक्टर</span>{% else %}<span class="brand-name-main">Agri</span><span class="brand-light">Sage</span>{% endif %}</span></a>
+<nav><a class="history-nav" href="/library?lang={{ lang }}">{% if lang == 'hi' %}फसल स्वास्थ्य गाइड{% elif lang == 'mr' %}पीक आरोग्य मार्गदर्शिका{% else %}Crop Health Guide{% endif %}</a><div class="language-select-shell" id="language-select-shell"><button class="language-picker-button" id="language-menu-button" type="button" aria-label="{% if lang == 'hi' %}भाषा चुनें{% elif lang == 'mr' %}भाषा निवडा{% else %}Choose language{% endif %}" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu"><span id="language-picker-label">{{ {'en':'English','hi':'हिन्दी','mr':'मराठी'}[lang] }}</span><span class="crop-select-chevron" aria-hidden="true">⌄</span></button><div class="language-menu" id="language-menu" role="listbox" aria-labelledby="language-menu-button" hidden>{% for key, label in [('en','English'),('hi','हिन्दी'),('mr','मराठी')] %}<button type="button" class="language-menu-option{% if lang == key %} is-selected{% endif %}" role="option" data-value="{{ key }}" aria-selected="{{ 'true' if lang == key else 'false' }}">{{ label }}</button>{% endfor %}</div></div></nav></header>
+<main>
+<section class="hero"><div class="hero-copy"><h1>{% if lang == 'hi' %}रोग पहचानें।<br><em>फसल बचाएँ।</em>{% elif lang == 'mr' %}रोग ओळखा.<br><em>पीक जपा.</em>{% else %}Spot the disease.<br><em>Protect the crop.</em>{% endif %}</h1>
+</div>
+<div class="hero-art" aria-label="Leaf illustration"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-leaf" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 78V48" fill="none" stroke="#2f6637" stroke-width="4" stroke-linecap="round"/><path d="M50 54C22 54 14 35 17 16c22 0 39 11 33 38Z" fill="#e0f3b5"/><path d="M50 66C50 41 66 24 87 25c2 22-12 39-37 41Z" fill="#4d8d49"/><path d="M28 28l22 26m26-17L50 65" fill="none" stroke="#f3f9e9" stroke-width="3" stroke-linecap="round"/></svg></div></div></section>
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="messages">{% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+
+<section class="scan-grid">
+<div class="growing-plant plant-left" aria-hidden="true">
+<svg class="side-tree" viewBox="0 0 220 170" role="presentation"><path class="tree-trunk" d="M104 153 Q110 125 106 99 L94 75 L100 72 L111 94 L122 74 L128 77 L114 104 Q116 130 120 153Z"/><path class="tree-branch" d="M108 109L79 82M113 99L143 70M104 91L94 60"/><g class="tree-canopy"><circle cx="80" cy="65" r="27"/><circle cx="111" cy="48" r="32"/><circle cx="143" cy="65" r="26"/><circle cx="105" cy="76" r="27"/><circle cx="137" cy="83" r="19"/></g><path class="tree-ground" d="M48 154 Q110 146 173 154"/></svg>
+<svg viewBox="0 0 220 170" role="presentation">
+<path class="grass-blade" d="M110 151 Q70 102 38 43 Q86 70 110 151Z"/>
+<path class="grass-blade blade-2" d="M110 151 Q88 88 87 22 Q119 83 110 151Z"/>
+<path class="grass-blade blade-3" d="M110 151 Q116 78 151 28 Q151 95 110 151Z"/>
+<path class="grass-blade blade-4" d="M110 151 Q146 93 190 62 Q172 119 110 151Z"/>
+<path class="grass-blade blade-5" d="M108 151 Q54 122 20 91 Q72 97 108 151Z"/>
+<path class="grass-blade blade-6" d="M111 151 Q87 120 58 71 Q99 92 111 151Z"/>
+<path class="grass-blade blade-7" d="M111 151 Q126 106 174 87 Q151 128 111 151Z"/>
+<path class="grass-blade blade-8" d="M109 151 Q96 96 112 48 Q132 105 109 151Z"/>
+<path class="grass-blade blade-9" d="M110 151 Q140 124 204 112 Q166 145 110 151Z"/>
+<path class="grass-blade blade-10" d="M108 151 Q60 145 31 126 Q76 123 108 151Z"/>
+<path class="grass-ground" d="M17 153 Q110 142 203 153"/>
+</svg>
+<svg class="garden-extra" viewBox="0 0 220 170" role="presentation">
+<!-- Tiny flowering plants among the grass -->
+<path class="flower-stem" d="M39 151 Q36 136 40 124 M65 151 Q69 138 67 130 M183 151 Q181 138 184 128"/>
+<path class="flower-leaf" d="M38 142 Q27 134 29 128 Q39 131 40 140Z M42 136 Q51 129 51 123 Q42 126 42 136Z M65 144 Q55 138 55 133 Q65 135 66 142Z M184 143 Q194 136 193 131 Q184 135 184 143Z"/>
+<g class="flower-head"><circle cx="40" cy="121" r="3.2"/><circle cx="35" cy="124" r="3.2"/><circle cx="45" cy="124" r="3.2"/><circle cx="37" cy="129" r="3.2"/><circle cx="43" cy="129" r="3.2"/><circle cx="40" cy="126" r="2.7" fill="#f2c95d"/><circle cx="67" cy="127" r="2.5"/><circle cx="63" cy="130" r="2.5"/><circle cx="71" cy="130" r="2.5"/><circle cx="67" cy="131" r="2.2" fill="#f2c95d"/><circle cx="184" cy="125" r="2.6"/><circle cx="180" cy="128" r="2.6"/><circle cx="188" cy="128" r="2.6"/><circle cx="184" cy="129" r="2.2" fill="#f2c95d"/></g>
+<!-- A small friendly squirrel sitting beside the grass -->
+<g class="garden-squirrel">
+<path class="squirrel-tail" d="M145 145 C126 135 133 113 149 115 C162 117 161 132 151 135 C145 137 143 131 148 128 C153 125 151 121 147 122 C138 124 139 135 151 140Z"/>
+<ellipse class="squirrel-body" cx="157" cy="139" rx="10" ry="13"/>
+<circle class="squirrel-head" cx="158" cy="124" r="8.5"/>
+<path class="squirrel-ear" d="M152 118 L151 110 L157 116Z M161 117 L166 111 L166 120Z"/>
+<ellipse class="squirrel-belly" cx="159" cy="141" rx="5.2" ry="7.5"/>
+<path class="squirrel-arm" d="M153 133 Q160 131 163 137 Q160 140 156 137Z"/>
+<circle class="squirrel-eye" cx="161" cy="123" r="1.1"/><circle class="squirrel-nose" cx="166" cy="126" r="1.5"/>
+<path class="squirrel-foot" d="M151 149 Q147 152 153 152 L158 151 M160 150 Q165 153 169 150"/>
+</g>
+<!-- A tiny green tortoise with a leaf-like shell -->
+<g class="garden-tortoise">
+<path class="tortoise-leg" d="M91 144 Q86 147 88 151 L96 151 L98 145 M111 144 Q116 147 114 151 L106 151 L104 145"/>
+<ellipse class="tortoise-shell" cx="101" cy="139" rx="15" ry="10"/>
+<path class="tortoise-shell-detail" d="M101 130 L101 148 M87 139 L115 139 M92 132 L96 139 L92 146 M110 132 L106 139 L110 146"/>
+<path class="tortoise-neck" d="M112 138 Q118 135 121 139 L120 144 Q115 146 111 143Z"/>
+<circle class="tortoise-head" cx="122" cy="140" r="6"/>
+<circle class="tortoise-eye" cx="124" cy="138" r="1.1"/>
+<path class="tortoise-smile" d="M123 143 Q125 145 127 142"/>
+<path class="tortoise-tail" d="M86 139 L81 142 L87 143Z"/>
+</g>
+</svg></div>
+<div class="panel upload-panel"><div class="panel-top"><span class="mini-status"><span class="live-dot"></span> {% if lang == 'hi' %}तैयार{% elif lang == 'mr' %}तयार{% else %}READY{% endif %}</span></div>
+<h2>{% if lang == 'hi' %}फसल की फोटो अपलोड करें{% elif lang == 'mr' %}पिकाचा फोटो अपलोड करा{% else %}Upload a crop photo{% endif %}</h2>
+<p class="muted">{% if lang == 'hi' %}अच्छी रोशनी में फसल की स्पष्ट तस्वीर लें।{% elif lang == 'mr' %}चांगल्या प्रकाशात पिकाचा स्पष्ट फोटो घ्या.{% else %}Use a clear, well-lit photo of the crop.{% endif %}</p>
+<form method="post" enctype="multipart/form-data" id="upload-form"><input type="hidden" name="lang" value="{{ lang }}">
+<div class="crop-picker-wrap"><label for="crop-menu-button">{% if lang == 'hi' %}फसल चुनें{% elif lang == 'mr' %}पीक निवडा{% else %}Select crop{% endif %}</label><div class="crop-select-shell" id="crop-select-shell"><select class="crop-picker crop-native-select{% if crop_choice == 'auto' %} crop-picker-auto{% endif %}" id="crop" name="crop" tabindex="-1" aria-hidden="true">{% for key, label in crop_options %}<option value="{{ key }}" {% if crop_choice == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button class="crop-picker crop-picker-button{% if crop_choice == 'auto' %} crop-picker-auto{% endif %}" id="crop-menu-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="crop-menu"><span id="crop-picker-label">{% for key, label in crop_options %}{% if crop_choice == key %}{{ label }}{% endif %}{% endfor %}</span><span class="crop-select-chevron" aria-hidden="true">⌄</span></button><div class="crop-menu" id="crop-menu" role="listbox" aria-labelledby="crop-menu-button" hidden></div></div></div>
+<label class="dropzone" for="leaf_image"><span class="upload-symbol">＋</span><strong id="file-title">{% if lang == 'hi' %}फसल की फोटो चुनें{% elif lang == 'mr' %}पिकाचा फोटो निवडा{% else %}Choose a crop photo{% endif %}</strong><span id="file-subtitle">{% if lang == 'hi' %}JPG, PNG या WEBP · अधिकतम 8 MB{% elif lang == 'mr' %}JPG, PNG किंवा WEBP · कमाल 8 MB{% else %}JPG, PNG or WEBP · Max 8 MB{% endif %}</span><div id="preview-wrap" class="preview-wrap" hidden><img id="preview" alt="Selected crop photo"></div><span class="browse">{% if lang == 'hi' %}ब्राउज़ करें{% elif lang == 'mr' %}फाइल निवडा{% else %}Browse{% endif %} <span>↗</span></span></label>
+<input id="leaf_image" name="leaf_image" type="file" accept="image/png,image/jpeg,image/webp" required>
+<button class="primary" type="submit"><span>{% if lang == 'hi' %}रोग पहचानें{% elif lang == 'mr' %}रोग ओळखा{% else %}Predict disease{% endif %}</span><span class="button-arrow">↗</span></button>
+</form></div>
+<div class="growing-plant plant-right" aria-hidden="true">
+<svg class="side-tree" viewBox="0 0 220 170" role="presentation"><path class="tree-trunk" d="M104 153 Q110 125 106 99 L94 75 L100 72 L111 94 L122 74 L128 77 L114 104 Q116 130 120 153Z"/><path class="tree-branch" d="M108 109L79 82M113 99L143 70M104 91L94 60"/><g class="tree-canopy"><circle cx="80" cy="65" r="27"/><circle cx="111" cy="48" r="32"/><circle cx="143" cy="65" r="26"/><circle cx="105" cy="76" r="27"/><circle cx="137" cy="83" r="19"/></g><path class="tree-ground" d="M48 154 Q110 146 173 154"/></svg>
+<svg class="garden-extra" viewBox="0 0 220 170" role="presentation">
+<!-- Tiny flowering plants among the grass -->
+<path class="flower-stem" d="M39 151 Q36 136 40 124 M65 151 Q69 138 67 130 M183 151 Q181 138 184 128"/>
+<path class="flower-leaf" d="M38 142 Q27 134 29 128 Q39 131 40 140Z M42 136 Q51 129 51 123 Q42 126 42 136Z M65 144 Q55 138 55 133 Q65 135 66 142Z M184 143 Q194 136 193 131 Q184 135 184 143Z"/>
+<g class="flower-head"><circle cx="40" cy="121" r="3.2"/><circle cx="35" cy="124" r="3.2"/><circle cx="45" cy="124" r="3.2"/><circle cx="37" cy="129" r="3.2"/><circle cx="43" cy="129" r="3.2"/><circle cx="40" cy="126" r="2.7" fill="#f2c95d"/><circle cx="67" cy="127" r="2.5"/><circle cx="63" cy="130" r="2.5"/><circle cx="71" cy="130" r="2.5"/><circle cx="67" cy="131" r="2.2" fill="#f2c95d"/><circle cx="184" cy="125" r="2.6"/><circle cx="180" cy="128" r="2.6"/><circle cx="188" cy="128" r="2.6"/><circle cx="184" cy="129" r="2.2" fill="#f2c95d"/></g>
+<!-- A small friendly squirrel sitting beside the grass -->
+<g class="garden-squirrel">
+<path class="squirrel-tail" d="M145 145 C126 135 133 113 149 115 C162 117 161 132 151 135 C145 137 143 131 148 128 C153 125 151 121 147 122 C138 124 139 135 151 140Z"/>
+<ellipse class="squirrel-body" cx="157" cy="139" rx="10" ry="13"/>
+<circle class="squirrel-head" cx="158" cy="124" r="8.5"/>
+<path class="squirrel-ear" d="M152 118 L151 110 L157 116Z M161 117 L166 111 L166 120Z"/>
+<ellipse class="squirrel-belly" cx="159" cy="141" rx="5.2" ry="7.5"/>
+<path class="squirrel-arm" d="M153 133 Q160 131 163 137 Q160 140 156 137Z"/>
+<circle class="squirrel-eye" cx="161" cy="123" r="1.1"/><circle class="squirrel-nose" cx="166" cy="126" r="1.5"/>
+<path class="squirrel-foot" d="M151 149 Q147 152 153 152 L158 151 M160 150 Q165 153 169 150"/>
+</g>
+<!-- A tiny green tortoise with a leaf-like shell -->
+<g class="garden-tortoise">
+<path class="tortoise-leg" d="M91 144 Q86 147 88 151 L96 151 L98 145 M111 144 Q116 147 114 151 L106 151 L104 145"/>
+<ellipse class="tortoise-shell" cx="101" cy="139" rx="15" ry="10"/>
+<path class="tortoise-shell-detail" d="M101 130 L101 148 M87 139 L115 139 M92 132 L96 139 L92 146 M110 132 L106 139 L110 146"/>
+<path class="tortoise-neck" d="M112 138 Q118 135 121 139 L120 144 Q115 146 111 143Z"/>
+<circle class="tortoise-head" cx="122" cy="140" r="6"/>
+<circle class="tortoise-eye" cx="124" cy="138" r="1.1"/>
+<path class="tortoise-smile" d="M123 143 Q125 145 127 142"/>
+<path class="tortoise-tail" d="M86 139 L81 142 L87 143Z"/>
+</g>
+</svg></div>
+</section>
+{% if result %}
+<section class="report">{% if result.unconfirmed %}<div class="alert error prediction-failed" role="alert">Prediction failed</div>{% else %}<div class="report-heading"><div><h2>{% if lang == 'hi' %}रोग पहचान के परिणाम{% elif lang == 'mr' %}रोग ओळखीचा निकाल{% else %}Diagnosis results{% endif %}<span class="heading-dot">.</span></h2></div><span class="report-chip">{% if lang == 'hi' %}परिणाम{% elif lang == 'mr' %}निकाल{% else %}RESULT{% endif %}</span></div>
+<div class="diagnosis-card"><div class="diagnosis-photo"><img src="{{ url_for('static', filename='uploads/' + result.image) }}" alt="{% if lang == 'hi' %}अपलोड की गई फसल की तस्वीर{% elif lang == 'mr' %}अपलोड केलेल्या पिकाचा फोटो{% else %}Uploaded crop photo{% endif %}"></div>
+<div class="diagnosis-main">{% if result.unconfirmed %}<div class="alert error verification-warning"><strong>{% if lang == 'hi' %}रोग की पुष्टि नहीं हुई{% elif lang == 'mr' %}रोगाची खात्री झालेली नाही{% else %}Diagnosis not confirmed{% endif %}</strong><p>{{ result.verification.message }}</p><p>{% if lang == 'hi' %}मॉडल का शुरुआती अनुमान:{% elif lang == 'mr' %}मॉडेलचा प्राथमिक अंदाज:{% else %}Model's initial suggestion:{% endif %} <b>{{ result.predicted_disease }}</b></p>{% if result.verification.reason %}<p>{{ result.verification.reason }}</p>{% endif %}</div>{% endif %}<div class="crop-pill">{% if lang == 'hi' %}{% if result.crop == 'Maize / corn' %}मक्का{% elif result.crop == 'Potato' %}आलू{% elif result.crop == 'Tomato' %}टमाटर{% else %}{{ result.crop }}{% endif %}{% elif lang == 'mr' %}{% if result.crop == 'Maize / corn' %}मका{% elif result.crop == 'Potato' %}बटाटा{% elif result.crop == 'Tomato' %}टोमॅटो{% else %}{{ result.crop }}{% endif %}{% else %}{{ result.crop }}{% endif %}</div><div class="disease-title">{% if lang == 'hi' %}{% if result.disease == 'Common rust' %}कॉमन रस्ट{% elif result.disease == 'Northern Leaf Blight' %}नॉर्दर्न लीफ ब्लाइट{% elif result.disease == 'Early blight' %}अर्ली ब्लाइट{% elif result.disease == 'Late blight' %}लेट ब्लाइट{% elif result.disease == 'Bacterial spot' %}बैक्टीरियल स्पॉट{% elif result.disease == 'Leaf Mold' %}लीफ मोल्ड{% elif result.disease == 'Septoria leaf spot' %}सेप्टोरिया लीफ स्पॉट{% elif result.disease == 'Tomato Yellow Leaf Curl Virus' %}टमाटर येलो लीफ कर्ल वायरस{% elif result.disease == 'Healthy' %}स्वस्थ{% else %}{{ result.disease }}{% endif %}{% elif lang == 'mr' %}{% if result.disease == 'Common rust' %}कॉमन रस्ट{% elif result.disease == 'Northern Leaf Blight' %}नॉर्दर्न लीफ ब्लाइट{% elif result.disease == 'Early blight' %}अर्ली ब्लाइट{% elif result.disease == 'Late blight' %}लेट ब्लाइट{% elif result.disease == 'Bacterial spot' %}बॅक्टेरियल स्पॉट{% elif result.disease == 'Leaf Mold' %}लीफ मोल्ड{% elif result.disease == 'Septoria leaf spot' %}सेप्टोरिया लीफ स्पॉट{% elif result.disease == 'Tomato Yellow Leaf Curl Virus' %}टोमॅटो यलो लीफ कर्ल व्हायरस{% elif result.disease == 'Healthy' %}निरोगी{% else %}{{ result.disease }}{% endif %}{% else %}{{ result.disease }}{% endif %}</div>
+{% if result.healthy %}<p class="diagnosis-intro">{% if lang == 'hi' %}मॉडल के अनुसार यह पत्ती स्वस्थ पत्ती से सबसे अधिक मिलती है। इससे यह साबित नहीं होता कि पौधा रोग-मुक्त है।{% elif lang == 'mr' %}मॉडेलनुसार हे पान निरोगी पानाशी सर्वाधिक जुळते. यावरून पीक रोगमुक्त आहे याची खात्री होत नाही.{% else %}The model's closest match is a healthy leaf. This does not guarantee the plant is disease-free.{% endif %}</p>{% endif %}
+<div class="score-head"><span>{% if lang == 'hi' %}मॉडल स्कोर{% elif lang == 'mr' %}मॉडेल गुण{% else %}Model score{% endif %}</span><strong>{{ "%.1f"|format(result.confidence * 100) }}<small>%</small></strong></div><div class="score-track"><span style="width: {{ (result.confidence * 100)|round|int }}%"></span></div>
+<div class="score-foot"><span>{% if result.low_confidence %}{% if lang == 'hi' %}कम स्कोर — स्थानीय पुष्टि करें{% elif lang == 'mr' %}कमी गुण — स्थानिक खात्री करा{% else %}Low score — verify locally{% endif %}{% else %}{% if lang == 'hi' %}स्कोर सही होने की संभावना नहीं है{% elif lang == 'mr' %}गुण म्हणजे अचूकतेची शक्यता नाही{% else %}Score is not probability of correctness{% endif %}{% endif %}</span></div></div></div>
+<section class="panel report-panel disease-detail-panel"><h3>{% if lang == 'hi' %}रोग का विवरण और बचाव{% elif lang == 'mr' %}रोगाचे वर्णन आणि प्रतिबंध{% else %}Disease description and prevention{% endif %}</h3>
+{% if result.unconfirmed %}<p>{{ result.verification.message }} {% if lang == 'hi' %}कृपया स्पष्ट फोटो अपलोड करें या कृषि विशेषज्ञ से सलाह लें।{% elif lang == 'mr' %}कृपया स्पष्ट फोटो अपलोड करा किंवा कृषी तज्ज्ञांचा सल्ला घ्या.{% else %}Please upload a clearer photo or consult an agricultural expert.{% endif %}</p>{% else %}
+{% if result.research.message %}<p class="muted">{{ result.research.message }}</p>{% endif %}{% if result.research.description and result.research.prevention %}<div class="detail-item"><b>{% if lang == 'hi' %}विवरण{% elif lang == 'mr' %}वर्णन{% else %}Description{% endif %}</b><p>{{ result.research.description }}</p></div><div class="detail-item"><b>{% if lang == 'hi' %}बचाव और प्रबंधन{% elif lang == 'mr' %}प्रतिबंध आणि व्यवस्थापन{% else %}Prevention and management{% endif %}</b><p>{{ result.research.prevention }}</p></div>{% endif %}
+
+{% if result.research.sources %}<div class="detail-item research-sources"><b>{% if lang == 'hi' %}स्रोत{% elif lang == 'mr' %}स्रोत{% else %}Sources used{% endif %}</b><ul>{% for source in result.research.sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a></li>{% endfor %}</ul></div>{% endif %}
+{% endif %}<div class="guide-foot">{% if lang == 'hi' %}छिड़काव से पहले स्थानीय KVK या कृषि अधिकारी से रोग की पुष्टि करें।{% elif lang == 'mr' %}फवारणीपूर्वी स्थानिक KVK किंवा कृषी अधिकाऱ्याकडून रोगाची खात्री करून घ्या.{% else %}Confirm the disease with a local KVK or agriculture officer before spraying.{% endif %}</div></section>
+{% endif %}</section>
+{% endif %}
+
+</main>
+<footer class="team-credit" aria-label="Project team">
+  <span><span class="team-bullet" aria-hidden="true">•</span>Sushant Kishor Chinche</span>
+  <span><span class="team-bullet" aria-hidden="true">•</span>Shantanu Kishor Thakare</span>
+  <span><span class="team-bullet" aria-hidden="true">•</span>Meher Bhimrao Kharabe</span>
+</footer>
+<script>
+const input=document.getElementById('leaf_image'),title=document.getElementById('file-title'),sub=document.getElementById('file-subtitle'),wrap=document.getElementById('preview-wrap'),preview=document.getElementById('preview'),zone=document.querySelector('.dropzone');
+function showFile(file){if(!file)return;zone.classList.add('has-file');title.textContent=file.name;sub.textContent=(file.size/1024/1024).toFixed(2)+' MB '+({en:'selected',hi:'चुनी गई',mr:'निवडलेला'}[document.documentElement.lang]||'selected');if(file.type.startsWith('image/')){preview.src=URL.createObjectURL(file);wrap.hidden=false;}else{wrap.hidden=true;}}
+const languageShell=document.getElementById('language-select-shell'),languageButton=document.getElementById('language-menu-button'),languageMenu=document.getElementById('language-menu');
+function closeLanguageMenu(){languageMenu.hidden=true;languageButton.setAttribute('aria-expanded','false');}
+function openLanguageMenu(){languageMenu.hidden=false;languageButton.setAttribute('aria-expanded','true');languageMenu.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});}
+languageButton.addEventListener('click',()=>languageMenu.hidden?openLanguageMenu():closeLanguageMenu());
+languageButton.addEventListener('keydown',event=>{if(['ArrowDown','Enter',' '].includes(event.key)){event.preventDefault();openLanguageMenu();languageMenu.querySelector('[aria-selected="true"]')?.focus();}});
+languageMenu.addEventListener('click',event=>{const option=event.target.closest('[data-value]');if(option)location.href='/?lang='+encodeURIComponent(option.dataset.value);});
+languageMenu.addEventListener('keydown',event=>{const items=[...languageMenu.querySelectorAll('[role="option"]')],index=items.indexOf(document.activeElement);if(event.key==='Escape'){event.preventDefault();closeLanguageMenu();languageButton.focus();}else if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();items[Math.max(0,Math.min(items.length-1,index+(event.key==='ArrowDown'?1:-1)))]?.focus();}else if(event.key==='Home'||event.key==='End'){event.preventDefault();items[event.key==='Home'?0:items.length-1]?.focus();}else if(event.key==='Enter'||event.key===' '){event.preventDefault();document.activeElement?.click();}});
+document.addEventListener('click',event=>{if(!languageShell.contains(event.target))closeLanguageMenu();});
+const cropSelect=document.getElementById('crop'),cropShell=document.getElementById('crop-select-shell'),cropButton=document.getElementById('crop-menu-button'),cropMenu=document.getElementById('crop-menu'),cropLabel=document.getElementById('crop-picker-label');
+function syncCropMode(){const isAuto=cropSelect.value==='auto';cropButton.classList.toggle('crop-picker-auto',isAuto);cropLabel.textContent=cropSelect.options[cropSelect.selectedIndex]?.text||'';[...cropMenu.querySelectorAll('[role="option"]')].forEach(item=>{const selected=item.dataset.value===cropSelect.value;item.setAttribute('aria-selected',String(selected));item.classList.toggle('is-selected',selected);});}
+function closeCropMenu(){cropMenu.hidden=true;cropButton.setAttribute('aria-expanded','false');}
+function openCropMenu(){cropMenu.hidden=false;cropButton.setAttribute('aria-expanded','true');const active=cropMenu.querySelector('[aria-selected="true"]');if(active)active.scrollIntoView({block:'nearest'});}
+[...cropSelect.options].forEach(option=>{const item=document.createElement('button');item.type='button';item.className='crop-menu-option';item.setAttribute('role','option');item.dataset.value=option.value;item.textContent=option.text;item.setAttribute('aria-selected',String(option.selected));item.addEventListener('click',()=>{cropSelect.value=option.value;cropSelect.dispatchEvent(new Event('change',{bubbles:true}));closeCropMenu();cropButton.focus();});cropMenu.appendChild(item);});
+cropButton.addEventListener('click',()=>cropMenu.hidden?openCropMenu():closeCropMenu());
+cropButton.addEventListener('keydown',event=>{if(event.key==='ArrowDown'||event.key==='Enter'||event.key===' '){event.preventDefault();openCropMenu();const selected=cropMenu.querySelector('[aria-selected="true"]');selected?.focus();}});
+cropMenu.addEventListener('keydown',event=>{const items=[...cropMenu.querySelectorAll('[role="option"]')],index=items.indexOf(document.activeElement);if(event.key==='Escape'){event.preventDefault();closeCropMenu();cropButton.focus();}else if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();items[Math.max(0,Math.min(items.length-1,index+(event.key==='ArrowDown'?1:-1)))]?.focus();}else if(event.key==='Home'||event.key==='End'){event.preventDefault();items[event.key==='Home'?0:items.length-1]?.focus();}});
+document.addEventListener('click',event=>{if(!cropShell.contains(event.target))closeCropMenu();});
+cropSelect.addEventListener('change',syncCropMode);syncCropMode();
+input.addEventListener('change',()=>showFile(input.files[0]));zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragging')});zone.addEventListener('dragleave',()=>zone.classList.remove('dragging'));zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragging');if(e.dataTransfer.files.length){input.files=e.dataTransfer.files;showFile(e.dataTransfer.files[0]);}});document.getElementById('upload-form').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const form=event.currentTarget;
+  const button=form.querySelector('.primary');
+  const originalButton=button.innerHTML;
+  const lang=document.documentElement.lang;
+  const messages={en:{loading:'Predicting disease — please wait…',error:'Prediction failed. Please try again.',working:'Please wait…'},hi:{loading:'रोग की जाँच हो रही है — कृपया प्रतीक्षा करें…',error:'रोग की जाँच नहीं हो सकी। कृपया फिर प्रयास करें।',working:'कृपया प्रतीक्षा करें…'},mr:{loading:'रोग तपासला जात आहे — कृपया थांबा…',error:'रोग तपासता आला नाही. कृपया पुन्हा प्रयत्न करा.',working:'कृपया थांबा…'}};
+  const words=messages[lang]||messages.en;
+  if(!input.files.length){input.reportValidity();return;}
+  button.disabled=true;button.setAttribute('aria-busy','true');
+  // A new upload starts a new prediction; never leave a previous result visible if this one fails.
+  const previousReport=document.querySelector('.report');
+  if(previousReport)previousReport.remove();
+  const previousError=document.querySelector('.ajax-error');
+  if(previousError)previousError.remove();
+  button.innerHTML='<span>'+words.loading+'</span><span class="button-arrow">…</span>';
+  try{
+    const response=await fetch(window.location.pathname+'?lang='+encodeURIComponent(lang),{
+      method:'POST',body:new FormData(form),headers:{'X-Requested-With':'XMLHttpRequest'}
+    });
+    const html=await response.text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    const nextReport=parsed.querySelector('.report');
+    const currentReport=document.querySelector('.report');
+    const currentMessages=document.querySelector('.messages');
+    const nextMessages=parsed.querySelector('.messages');
+    if(currentMessages)currentMessages.remove();
+    if(nextMessages){
+      const scanGrid=document.querySelector('.scan-grid');
+      scanGrid.before(nextMessages);
+    }
+    if(nextReport){
+      if(currentReport)currentReport.replaceWith(nextReport);
+      else document.querySelector('.scan-grid').after(nextReport);
+      nextReport.id='results';
+      nextReport.scrollIntoView({behavior:'smooth',block:'start'});
+    }else if(!nextMessages){
+      throw new Error('No prediction result was returned.');
+    }else{
+      nextMessages.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  }catch(error){
+    console.error('Prediction request failed:',error);
+    let alert=document.querySelector('.ajax-error');
+    if(!alert){alert=document.createElement('div');alert.className='alert error ajax-error';document.querySelector('.scan-grid').before(alert);}
+    alert.textContent=words.error;
+    alert.scrollIntoView({behavior:'smooth',block:'center'});
+  }finally{
+    button.disabled=false;button.removeAttribute('aria-busy');button.innerHTML=originalButton;
+  }
+});
+</script>

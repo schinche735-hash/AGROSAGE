@@ -1,0 +1,23 @@
+.env
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+data/*.db
+static/uploads/*
+!static/uploads/.gitkeep
+# Keep the exact inference model and labels in source control.
+models/*.keras
+!models/plantdisease_expanded_frozen_old_candidate.keras
+models/*.download
+models/labels_plantdisease_expanded_candidate.json
+models/labels_plantdisease_expanded_candidate_v2.json
+models/labels_plantdisease_expanded_frozen_old_candidate.json
+# Training datasets and experimental artifacts are not required to run the app.
+datasets/plant_disease_images/
+datasets/tfds_cache/
+datasets/plantdoc_reference/
+datasets/new_crop_sources/
+datasets/new_crop_training/
+datasets/expanded_training_split/
+models/backups/
